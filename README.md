@@ -5,7 +5,7 @@
 ![](./img/grafana_demo.png)
 
 ## How to install?
-* Please download the latest version of Grafana on the [github](https://github.com/grafana/grafana). (currently the latest one is tag -> v3.0-beta5)
+* Please download the latest version of Grafana on the [github](https://github.com/grafana/grafana). (currently the latest one is tag -> v3.0-beta7)
 * Finish the all setup up. (more info please refer the README.md in Grafana project.)
 ```
 cd $GOPATH/src/github.com/grafana/grafana
@@ -29,3 +29,14 @@ git clone https://github.com/masato25/grafana-openfalcon
 ```
 * if the installation is successed, You will see Openfalcon on the datasource list.
 ![](./img/openfalcon_datasource.png)
+
+## Support grafana-cli [not yet, but this is on ours plan]
+
+```
+grafana-cli plugins install grafana-openfalcon
+```
+```
+#edit conf/default.ini, add lines below
+[plugin.openfalocn]
+path = $GrafanaPath/data/plugins/grafana-openfalcon
+```
