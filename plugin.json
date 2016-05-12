@@ -1,7 +1,7 @@
 {
   "name": "Openfalcon",
   "type": "datasource",
-  "id": "openfalcon",
+  "id": "grafana-openfalcon-datasource",
 
   "includes": [
     {"type": "dashboard", "name": "Openfalcon Carbon Metrics", "path": "dashboards/carbon_metrics.json"}
