@@ -36,7 +36,7 @@ function (_, $) {
   //   params: [{ name: 'seconds', type: 'int' }],
   //   defaultParams: [1],
   // });
-  //
+
   addFuncDef({
     name: 'avgCompare',
     category: categories.Compute,
@@ -95,7 +95,8 @@ function (_, $) {
     this.updateText();
   }
 
-  FuncInstance.prototype.render = function(metricExp) {
+  FuncInstance.prototype.render = function(metricExp)
+  {
     var str = this.def.name + '(';
     var parameters = _.map(this.params, function(value, index) {
 
@@ -142,21 +143,8 @@ function (_, $) {
     else {
       this.params[index] = strValue;
     }
-    console.log("updateParam", this.params)
     this.updateText();
   };
-
-  // FuncInstance.prototype.updateText = function () {
-  //   if (this.params.length === 0) {
-  //     this.text = this.def.name + '()';
-  //     return;
-  //   }
-  //   var text = this.def.name + '(';
-  //   text += this.params.join(', ');
-  //   text += ')';
-  //   console.log("updateText", text)
-  //   this.text = text;
-  // };
 
   FuncInstance.prototype.updateText = function () {
     var text = { function: this.def.name };
@@ -177,7 +165,8 @@ function (_, $) {
 
   return {
     createFuncInstance: function(funcDef, options) {
-      if (_.isString(funcDef)) {
+      if
+      (_.isString(funcDef)) {
         if (!index[funcDef]) {
           throw { message: 'Method not found ' + name };
         }

@@ -1,5 +1,5 @@
-System.register(['./lexer'], function(exports_1) {
-    var lexer_1;
+System.register(['./lexer', 'lodash'], function(exports_1) {
+    var lexer_1, lodash_1;
     function Parser(expression) {
         this.expression = expression;
         this.lexer = new lexer_1.Lexer(expression);
@@ -11,16 +11,19 @@ System.register(['./lexer'], function(exports_1) {
         setters:[
             function (lexer_1_1) {
                 lexer_1 = lexer_1_1;
+            },
+            function (lodash_1_1) {
+                lodash_1 = lodash_1_1;
             }],
         execute: function() {
-            
+
             Parser.prototype = {
                 getAst: function () {
                     return this.start();
                 },
                 start: function () {
                     try {
-                        return this.functionCall() || this.metricExpression();
+                        return this.metricExpression() || this.functionCall();
                     }
                     catch (e) {
                         return {
@@ -92,7 +95,7 @@ System.register(['./lexer'], function(exports_1) {
                     if (!this.match('templateStart') &&
                         !this.match('identifier') &&
                         !this.match('number') &&
-                        !this.match('{')) {
+                        !this.match('identifier','{')) {
                         return null;
                     }
                     var node = {
@@ -101,6 +104,13 @@ System.register(['./lexer'], function(exports_1) {
                     };
                     node.segments.push(this.metricSegment());
                     while (this.match('.')) {
+                        if (this.tokens[this.index+1].value.match(/\{.+\}/)) {
+                          this.consumeToken();
+                          var nd = this.functionCall();
+                          nd.params.push(node)
+                          node = nd
+                          break
+                        }
                         this.consumeToken();
                         var segment = this.metricSegment();
                         if (!segment) {
@@ -111,19 +121,33 @@ System.register(['./lexer'], function(exports_1) {
                     return node;
                 },
                 functionCall: function () {
-                    if (!this.match('identifier', '(')) {
+                    // var s = "start"
+                    // while(Boolean(s)){
+                    //   s = this.consumeToken()
+                    //   console.log(s)
+                    // }
+                    if (this.tokens.length == 0 || !this.tokens[this.index].value.match(/\{.+\}/)) {
                         return null;
                     }
+                    funcTmp = JSON.parse(this.consumeToken().value)
                     var node = {
                         type: 'function',
-                        name: this.consumeToken().value,
+                        name: funcTmp.function
                     };
                     // consume left parenthesis
-                    this.consumeToken();
-                    node.params = this.functionParameters();
-                    if (!this.match(')')) {
-                        this.errorMark('Expected closing parenthesis');
-                    }
+                    // this.consumeToken();
+                    // node.params = this.functionParameters();
+                    params_keys = lodash_1.filter(Object.keys(funcTmp), function(k){
+                        if(k !== 'function'){
+                          return k
+                        }
+                      })
+                    node.params = lodash_1.map(params_keys, function(k){
+                        return {
+                          type: typeof funcTmp[k],
+                          value: funcTmp[k]
+                        }
+                      })
                     this.consumeToken();
                     return node;
                 },

@@ -50,12 +50,13 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './custom_f
                         //fix ip back to the right foramt ex. 10#10#10#10 -> 10.10.10.10
                         this.target.target = this.target.target.replace(/(\d+)#(\d+)#(\d+)#(\d+)/g,"$1.$2.$3.$4");
                         return;
-                    }else{
+                    } else {
                         //fix "." to "#"
                         this.target.target =  this.target.target.replace(/#/g, ".");
                     }
                     var parser = new parser_1.Parser(this.target.target);
                     var astNode = parser.getAst();
+                    console.log("astNode", astNode)
                     if (astNode === null) {
                         this.checkOtherSegments(0);
                         return;
@@ -221,7 +222,7 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './custom_f
                     // this.target.target = lodash_1.default.reduce(this.functions, this.wrapFunction, target);
                     this.target.target = lodash_1.default.reduce([], this.wrapFunction, target)
                     if(this.functions.length > 0 && typeof this.functions[0].text != "undefined"){
-                      this.target.target += "@owl@" + this.functions[0].text;
+                      this.target.target += "#" + this.functions[0].text;
                       if(typeof this.templateSrv.funcs == "undefined"){
                         this.templateSrv.funcs = [this.functions[0].text]
                       }else{
@@ -252,7 +253,6 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './custom_f
                     }
                 };
                 OpenfalconQueryCtrl.prototype.moveAliasFuncLast = function () {
-                    debugger
                     var aliasFunc = lodash_1.default.find(this.functions, function (func) {
                         return func.def.name === 'alias' ||
                             func.def.name === 'aliasByNode' ||

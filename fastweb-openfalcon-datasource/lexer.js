@@ -129,6 +129,10 @@ System.register(['lodash'], function(exports_1) {
                         i === 36 ||
                         i === 126 ||
                         i === 124 ||
+                        // "/"
+                        i === 47 ||
+                        // i === 44 ||
+                        //i === 123 || i === 125 || i === 58 ||
                         i >= 65 && i <= 90 ||
                         i === 95 ||
                         i === 45 ||
@@ -268,9 +272,15 @@ System.register(['lodash'], function(exports_1) {
                         /*jshint validthis:true */
                         var chr = this.peek(index);
                         var code = chr.charCodeAt(0);
+                        // console.log("@@", chr, code)
+
                         if (chr === '*') {
                             index += 1;
                             return chr;
+                        }
+                        if (chr === "{") {
+                            index += this.input.length;
+                            return this.input;
                         }
                         if (code === 92) {
                             return readUnicodeEscapeSequence();
@@ -292,6 +302,11 @@ System.register(['lodash'], function(exports_1) {
                         /*jshint validthis:true */
                         var chr = this.peek(index);
                         var code = chr.charCodeAt(0);
+                        // if([44,123,125,58].indexOf(code) > -1){
+                        // console.log("$$", chr, code)
+                          // index += 1;
+                          // return chr;
+                        // }
                         if (code === 92) {
                             return readUnicodeEscapeSequence();
                         }
@@ -520,9 +535,9 @@ System.register(['lodash'], function(exports_1) {
                         case ".":
                         case "(":
                         case ")":
-                        case ",":
-                        case "{":
-                        case "}":
+                        // case ",":
+                        // case "{":
+                        // case "}":
                             return true;
                     }
                     return false;
