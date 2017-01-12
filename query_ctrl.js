@@ -1,11 +1,11 @@
 ///<reference path="../../../headers/common.d.ts" />
-System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', './parser', 'app/plugins/sdk'], function(exports_1) {
+System.register(['./add_openfalcon_func', './func_editor', 'lodash', './custom_funcs', './parser', 'app/plugins/sdk'], function(exports_1) {
     var __extends = (this && this.__extends) || function (d, b) {
         for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
-    var lodash_1, gfunc_1, parser_1, sdk_1;
+    var lodash_1, custom_funcs_1, parser_1, sdk_1;
     var OpenfalconQueryCtrl;
     return {
         setters:[
@@ -14,8 +14,8 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
             function (lodash_1_1) {
                 lodash_1 = lodash_1_1;
             },
-            function (gfunc_1_1) {
-                gfunc_1 = gfunc_1_1;
+            function (custom_funcs_1_1) {
+                custom_funcs_1 = custom_funcs_1_1;
             },
             function (parser_1_1) {
                 parser_1 = parser_1_1;
@@ -50,12 +50,13 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
                         //fix ip back to the right foramt ex. 10#10#10#10 -> 10.10.10.10
                         this.target.target = this.target.target.replace(/(\d+)#(\d+)#(\d+)#(\d+)/g,"$1.$2.$3.$4");
                         return;
-                    }else{
+                    } else {
                         //fix "." to "#"
                         this.target.target =  this.target.target.replace(/#/g, ".");
                     }
                     var parser = new parser_1.Parser(this.target.target);
                     var astNode = parser.getAst();
+                    console.log("astNode", astNode)
                     if (astNode === null) {
                         this.checkOtherSegments(0);
                         return;
@@ -69,7 +70,6 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
                         this.parseTargeRecursive(astNode, null, 0);
                     }
                     catch (err) {
-                        console.log('error parsing target:', err.message);
                         this.error = err.message;
                         this.target.textEditor = true;
                     }
@@ -88,7 +88,7 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
                     }
                     switch (astNode.type) {
                         case 'function':
-                            var innerFunc = gfunc_1.default.createFuncInstance(astNode.name, { withDefaultParams: false });
+                            var innerFunc = custom_funcs_1.default.createFuncInstance(astNode.name, { withDefaultParams: false });
                             lodash_1.default.each(astNode.params, function (param, index) {
                                 _this.parseTargeRecursive(param, innerFunc, index);
                             });
@@ -157,6 +157,7 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
                     });
                 };
                 OpenfalconQueryCtrl.prototype.wrapFunction = function (target, func) {
+                    // debugger
                     return func.render(target);
                 };
                 OpenfalconQueryCtrl.prototype.getAltSegments = function (index) {
@@ -217,8 +218,18 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
                     }
                     var oldTarget = this.target.target;
                     var target = this.getSegmentPathUpTo(this.segments.length);
-                    this.target.target = lodash_1.default.reduce(this.functions, this.wrapFunction, target);
-                    if (this.target.target !== oldTarget) {
+                    // *masato*
+                    // this.target.target = lodash_1.default.reduce(this.functions, this.wrapFunction, target);
+                    this.target.target = lodash_1.default.reduce([], this.wrapFunction, target)
+                    if(this.functions.length > 0 && typeof this.functions[0].text != "undefined"){
+                      this.target.target += "#" + this.functions[0].text;
+                      if(typeof this.templateSrv.funcs == "undefined"){
+                        this.templateSrv.funcs = [this.functions[0].text]
+                      }else{
+                        this.templateSrv.funcs.push(this.functions[0].text)
+                      }
+                    }
+                    if (this.target.target !== oldTarget || this.functions.length != 0) {
                         if (this.segments[this.segments.length - 1].value !== 'select metric') {
                             this.panelCtrl.refresh();
                         }
@@ -229,7 +240,7 @@ System.register(['./add_openfalcon_func', './func_editor', 'lodash', './gfunc', 
                     this.targetChanged();
                 };
                 OpenfalconQueryCtrl.prototype.addFunction = function (funcDef) {
-                    var newFunc = gfunc_1.default.createFuncInstance(funcDef, { withDefaultParams: true });
+                    var newFunc = custom_funcs_1.default.createFuncInstance(funcDef, { withDefaultParams: true });
                     newFunc.added = true;
                     this.functions.push(newFunc);
                     this.moveAliasFuncLast();

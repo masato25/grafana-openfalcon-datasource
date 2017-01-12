@@ -2,7 +2,7 @@ define([
   'angular',
   'lodash',
   'jquery',
-  './gfunc',
+  './custom_funcs',
 ],
 function (angular, _, $, gfunc) {
   'use strict';
@@ -28,8 +28,8 @@ function (angular, _, $, gfunc) {
 
           var $input = $(inputTemplate);
           var $button = $(buttonTemplate);
-          //$input.appendTo(elem);
-          //$button.appendTo(elem);
+          $input.appendTo(elem);
+          $button.appendTo(elem);
 
           $input.attr('data-provide', 'typeahead');
           $input.typeahead({

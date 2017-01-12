@@ -9,7 +9,6 @@ function (angular, _, $) {
   angular
     .module('grafana.directives')
     .directive('openfalconFuncEditor', function($compile, templateSrv) {
-
       var funcSpanTemplate = '<a ng-click="">{{func.def.name}}</a><span>(</span>';
       var paramTemplate = '<input type="text" style="display:none"' +
                           ' class="input-mini tight-form-func-param"></input>';

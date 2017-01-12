@@ -21,15 +21,20 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
         this.withCredentials = instanceSettings.withCredentials;
         this.render_method = instanceSettings.render_method || 'POST';
         this.query = function (options) {
+            console.log("opt", templateSrv)
+            var mytarget = FixTargets(options.targets)
             var graphOptions = {
                 from: this.translateTime(options.rangeRaw.from, false),
                 until: this.translateTime(options.rangeRaw.to, true),
-                targets: FixTargets(options.targets),
+                targets: mytarget,
                 format: options.format,
                 cacheTimeout: options.cacheTimeout || this.cacheTimeout,
                 maxDataPoints: options.maxDataPoints,
             };
-            var params = this.buildOpenfalconParams(graphOptions, options.scopedVars);
+            console.log("graphOptions", graphOptions)
+            var params_tmp = this.buildOpenfalconParams(graphOptions, options.scopedVars);
+            var params = params_tmp[0]
+            graphOptions.targets = params_tmp[1]
             if (params.length === 0) {
                 return $q.when({ data: [] });
             }
@@ -41,8 +46,9 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
                 httpOptions.url = httpOptions.url + '?' + params.join('&');
             }
             else {
-                httpOptions.data = params.join('&');
-                httpOptions.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                // httpOptions.data = params.join('&');
+                httpOptions.data = graphOptions;
+                httpOptions.headers = { 'Content-Type': 'application/json' };
             }
             return this.doOpenfalconRequest(httpOptions).then(this.convertDataPointsToMs);
         };
@@ -89,6 +95,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
                     format: 'json',
                     maxDataPoints: 100
                 };
+                console.log("openfalconQuery", openfalconQuery)
                 return this.query(openfalconQuery).then(function (result) {
                     var list = [];
                     for (var i = 0; i < result.data.length; i++) {
@@ -111,6 +118,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
             else {
                 // Openfalcon event as annotation
                 var tags = templateSrv.replace(options.annotation.tags);
+                console.log("openfalconQuery-tag", tags)
                 return this.events({ range: options.rangeRaw, tags: tags }).then(function (results) {
                     var list = [];
                     for (var i = 0; i < results.data.length; i++) {
@@ -252,6 +260,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
             function nestedSeriesRegexReplacer(match, g1) {
                 return targets[g1];
             }
+            var target_tmp = [];
             for (i = 0; i < options.targets.length; i++) {
                 target = options.targets[i];
                 if (!target.target) {
@@ -264,6 +273,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
                 if (!target.hide) {
                     hasTargets = true;
                     clean_options.push("target=" + encodeURIComponent(targetValue));
+                    target_tmp.push(targetValue);
                 }
             }
             lodash_1.default.each(options, function (value, key) {
@@ -277,7 +287,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
             if (!hasTargets) {
                 return [];
             }
-            return clean_options;
+            return [clean_options,target_tmp];
         };
     }
     exports_1("OpenfalconDatasource", OpenfalconDatasource);
@@ -290,6 +300,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
                 dateMath = dateMath_1;
             }],
         execute: function() {
+
         }
     }
 });
