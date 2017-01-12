@@ -34,7 +34,6 @@ git checkout v0.2
 ./bin/grafana-server
 ```
 
-```
 
 ## After Installation
 If the installation is successful, Open-Falcon datasource would be shown as follow:
