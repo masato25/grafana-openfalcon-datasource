@@ -1,5 +1,12 @@
 # Open-Falcon plugin for Grafana v4.x
 
+## Attention!
+This plugin `will not compatible on old version v3.x` (on v3.x you can user offcial version of query module from open-falcon).
+We did some new feature on v4.x version, so you have use the custom build up version of query that build by me.
+the repo url is here: https://github.com/masato25/open_lambda_query, if you meet any problem on setup or how to use it, please feel free to contact me. ^_^ enjoy
+
+## About this plugin
+
 [Open-Falcon](https://github.com/open-falcon/open-falcon) is an open-source, enterprise-level, and large-scale service monitoring system and time series database. It's initially released by Xiaomi SRE team in 2015 and heavily used in Xiaomi. Open-Falcon is now one of the most popular monitoring system in China internet companies:
 
 - www.mi.com
