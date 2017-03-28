@@ -67,7 +67,7 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
                      obj.datapoints = datapoints;
                      obj.target = host + '.' + metric;
                      data.push(obj);
-                } 
+                }
             });
             result.data = data;
             if (!result || !result.data) { return []; }
@@ -258,7 +258,8 @@ System.register(['lodash', 'app/core/utils/datemath'], function(exports_1) {
                     continue;
                 }
                 targetValue = targets[target.refId];
-                targetValue = targetValue.replace(regex, nestedSeriesRegexReplacer);
+                // this will brken upcase metric during query, so I just mark it to solve this kind of porblem. 
+                // targetValue = targetValue.replace(regex, nestedSeriesRegexReplacer);
                 targets[target.refId] = targetValue;
                 if (!target.hide) {
                     hasTargets = true;
