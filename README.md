@@ -27,7 +27,7 @@ More Info:
 
 ```
 git clone https://github.com/grafana/grafana
-git checkout v3.0-beta7
+git checkout v3.0.0-beta7
 ```
 
 #### Building Backend
