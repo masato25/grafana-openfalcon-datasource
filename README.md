@@ -23,58 +23,25 @@ More Info:
 ## Installation
 
 
-### Method 1: Building from Source
-
-```
-git clone https://github.com/grafana/grafana
-git checkout v3.0.0-beta7
-```
-
-#### Building Backend
-```
-cd $GOPATH/src/github.com/grafana/grafana
-go run build.go setup            (only needed once to install godep)
-godep restore                    (will pull down all golang lib dependencies in your current GOPATH)
-go run build.go build
-```
-
-#### Building Frontend
-```
-npm install
-npm install -g grunt-cli
-grunt
-```
+### Download prebuild version of grafana official site
+(https://grafana.com/grafana/download) `Grafana v4.2`
 
 #### Checkout the plugin
 ```
-cd $GRAFANA_PATH/public_gen/app/plugins/datasource
-git clone https://github.com/open-falcon/grafana-openfalcon-datasource openfalcon
+cd {GRAFANA_PATH_Installed}/data/plugins
+git clone https://github.com/Cepave/grafana-openfalcon-datasource
 ```
 
 ### Start grafana-server
 ```
-./bin/grafana-server
-```
-
-### Method 2: Using grafana-cli
-
-`grafana-cli plugins install grafana-openfalcon-datasource`
-
-#### Checkout the plugin
-
-```
-cd /var/lib/grafana/plugins
-git clone https://github.com/open-falcon/grafana-openfalcon-datasource grafana-openfalcon-datasource
-```
-
-#### Update the plugin information
-
-Add the following into `$GRAFANA_PATH/conf/defaults.ini`:
-```
-[plugin.openfalcon]
-path = /var/lib/grafana/plugins/grafana-openfalcon-datasource
+{GRAFANA_PATH_Installed}/bin/grafana-server
 ```
 
 ## After Installation
 If the installation is successful, Open-Falcon datasource would be shown as follow:
 ![](https://raw.githubusercontent.com/hitripod/kordan.common.store/master/images/open-falcon/grafana_plugin_1.png)
+
+## How to Set up datasource
+* the backend services is provide by [falcon-plus](https://github.com/open-falcon/falcon-plus/tree/master/modules/api).
+
+![](img/setup_grafana.png)
